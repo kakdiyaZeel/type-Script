@@ -1,0 +1,38 @@
+{
+  "name": "type-script-with-git-tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon dist/server.js",
+    "build:dev": "tsc --watch --preserveWatchOutput",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf build/ && prettier --write source/ && tsc",
+    "dev": "concurrently \"npm:build:dev\" \"npm:start:dev\""
+
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.0",
+    "sequelize-cli": "^6.4.1",
+    "ts-node": "^10.8.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.0.0",
+    "@types/sequelize": "^4.28.13",
+    "concurrently": "^7.2.2",
+    "typescript": "^4.7.4"
+  }
+}
