@@ -7,7 +7,7 @@ const user_1 = require("./user");
 const syncData = process.env.syncData;
 if (syncData === "true") {
     conn_1.sequelize
-        .sync({ alter: true, match: /a-auth/ })
+        .sync({ force: true, match: /a-auth/ })
         .then(() => {
         return console.log("Yes resync Data");
     })
@@ -25,9 +25,11 @@ Role.belongsToMany(User, {
     through: "user_roles",
     foreignKey: "roleId",
     otherKey: "userId",
+    as: "users",
 });
 User.belongsToMany(Role, {
     through: "user_roles",
     foreignKey: "userId",
     otherKey: "roleId",
+    as: "roles",
 });

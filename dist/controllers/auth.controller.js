@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signIn = exports.signUp = void 0;
+exports.forgotPassword = exports.changePassword = exports.signIn = exports.signUp = void 0;
 const auth_service_1 = require("../services/auth-service");
 const common_1 = require("../common");
 const md5_1 = __importDefault(require("md5"));
@@ -62,13 +62,10 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             authorities.push("ROLE_" + roles[i].name.toUpperCase());
         }
         if (!data) {
-            (err) => {
-                return common_1.response.errorResponse(res, 401, "Credential Error", err);
-            };
+            return common_1.response.errorResponse(res, 401, "Credential Error");
         }
         const authToken = (0, auth_1.token)(data === null || data === void 0 ? void 0 : data.id, data === null || data === void 0 ? void 0 : data.email, data === null || data === void 0 ? void 0 : data.phoneNumber);
         return common_1.response.successResponse(res, "Login Successfully", {
-            data,
             role: authorities,
             token: (yield authToken).toString(),
         });
@@ -78,3 +75,26 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.signIn = signIn;
+const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { password, confirmPassword } = req.body;
+        const { id } = req.token;
+        const salt = (0, md5_1.default)(10);
+        password = (0, md5_1.default)(password, salt);
+        confirmPassword = (0, md5_1.default)(confirmPassword, salt);
+        if (confirmPassword !== password) {
+            return common_1.response.errorResponse(res, 401, "Password Not Matched", "err");
+        }
+        const changePassword = yield (0, auth_service_1.changeUserPassword)(password, id);
+        if (!changePassword) {
+            return common_1.response.errorResponse(res, 401, "Please Try-Again Password Not Changed");
+        }
+        return common_1.response.successResponse(res, "Password Changed Successful, You Can Now Login With The New Password");
+    }
+    catch (error) {
+        return common_1.response.errorResponse(res, 500, error.message, error);
+    }
+});
+exports.changePassword = changePassword;
+const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.forgotPassword = forgotPassword;

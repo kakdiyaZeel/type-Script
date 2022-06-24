@@ -55,3 +55,14 @@ export const loginWithEmail = async (email: any, encryptedPassword: any) => {
     throw new Error(error);
   }
 };
+
+export const changeUserPassword = async (password: any, id: any) => {
+  try {
+    const updatePassword = await User.update({ password: password }, <any>{
+      where: { id: id },
+    });
+    return updatePassword;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};

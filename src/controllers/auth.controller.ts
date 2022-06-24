@@ -1,6 +1,7 @@
 import { User, Role } from "../models";
 import { Request, Response } from "express";
 import {
+  changeUserPassword,
   createUser,
   findRole,
   loginWithEmail,
@@ -8,7 +9,6 @@ import {
 } from "../services/auth-service";
 import { response } from "../common";
 import md5 from "md5";
-import { Op } from "sequelize";
 import { token } from "../auth";
 
 export const signUp = async (req: Request, res: Response) => {
@@ -67,15 +67,12 @@ export const signIn = async (req: Request, res: Response) => {
     }
 
     if (!data) {
-      (err: any) => {
-        return response.errorResponse(res, 401, "Credential Error", err);
-      };
+      return response.errorResponse(res, 401, "Credential Error");
     }
 
     const authToken = token(data?.id, data?.email, data?.phoneNumber);
 
     return response.successResponse(res, "Login Successfully", {
-      data,
       role: authorities,
       token: (await authToken).toString(),
     });
@@ -83,3 +80,37 @@ export const signIn = async (req: Request, res: Response) => {
     return response.errorResponse(res, 500, error.message, error);
   }
 };
+
+export const changePassword = async (req: any, res: any) => {
+  try {
+    let { password, confirmPassword } = req.body;
+    const { id } = req.token;
+
+    const salt = <any>md5(<any>10);
+    password = md5(password, salt);
+    confirmPassword = md5(confirmPassword, salt);
+
+    if (confirmPassword !== password) {
+      return response.errorResponse(res, 401, "Password Not Matched", "err");
+    }
+
+    const changePassword = await changeUserPassword(password, id);
+
+    if (!changePassword) {
+      return response.errorResponse(
+        res,
+        401,
+        "Please Try-Again Password Not Changed"
+      );
+    }
+
+    return response.successResponse(
+      res,
+      "Password Changed Successful, You Can Now Login With The New Password"
+    );
+  } catch (error: any) {
+    return response.errorResponse(res, 500, error.message, error);
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {};

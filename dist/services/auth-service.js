@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginWithEmail = exports.loginWithPhone = exports.findRole = exports.createUser = void 0;
+exports.changeUserPassword = exports.loginWithEmail = exports.loginWithPhone = exports.findRole = exports.createUser = void 0;
 const sequelize_1 = require("sequelize");
 const models_1 = require("../models");
 const createUser = (phoneNumber, email, password) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,3 +61,15 @@ const loginWithEmail = (email, encryptedPassword) => __awaiter(void 0, void 0, v
     }
 });
 exports.loginWithEmail = loginWithEmail;
+const changeUserPassword = (password, id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const updatePassword = yield models_1.User.update({ password: password }, {
+            where: { id: id },
+        });
+        return updatePassword;
+    }
+    catch (error) {
+        throw new Error(error);
+    }
+});
+exports.changeUserPassword = changeUserPassword;

@@ -1,10 +1,13 @@
 import express from "express";
 const router = express.Router();
 
-import { signUp, signIn } from "../controllers/auth.controller";
+import { isVerifyToken } from "../middleware";
+import { signUp, signIn, changePassword } from "../controllers/auth.controller";
 
 router.post("/signUp", signUp);
 
 router.post("/login", signIn);
+
+router.post("/changePassword", [isVerifyToken], changePassword);
 
 export { router };
