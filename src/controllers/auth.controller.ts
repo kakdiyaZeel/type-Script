@@ -10,6 +10,7 @@ import {
 import { response } from "../common";
 import md5 from "md5";
 import { token } from "../auth";
+import { sendPasswordResetEmail } from "../utils/send-email.utils";
 
 export const signUp = async (req: Request, res: Response) => {
   try {
@@ -113,4 +114,34 @@ export const changePassword = async (req: any, res: any) => {
   }
 };
 
-export const forgotPassword = async (req: Request, res: Response) => {};
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const resetToken = req.headers["authorization"];
+    const origin = req.header("Origin")?.toString();
+    console.log("origin", origin);
+    const user = await User.findOne({ where: { email: email } });
+
+    if (!user) {
+      return response.successResponse(res, "Response Ok", "List User");
+    }
+    await sendPasswordResetEmail(email, resetToken, origin);
+
+    return response.successResponse(
+      res,
+      "Please check your email for a new password"
+    );
+  } catch (error: any) {
+    return response.errorResponse(res, 500, error.message, error);
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { passWord } = req.body;
+
+  const name = "Reset - Password Template";
+
+  return res.render("reset", {
+    Password: passWord,
+  });
+};

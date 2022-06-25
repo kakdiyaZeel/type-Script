@@ -12,3 +12,5 @@ const auth_controller_1 = require("../controllers/auth.controller");
 router.post("/signUp", auth_controller_1.signUp);
 router.post("/login", auth_controller_1.signIn);
 router.post("/changePassword", [middleware_1.isVerifyToken], auth_controller_1.changePassword);
+router.get("/forgotPassword", auth_controller_1.forgotPassword);
+router.get("/resetPassword", auth_controller_1.resetPassword);

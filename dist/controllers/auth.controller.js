@@ -12,11 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.forgotPassword = exports.changePassword = exports.signIn = exports.signUp = void 0;
+exports.resetPassword = exports.forgotPassword = exports.changePassword = exports.signIn = exports.signUp = void 0;
+const models_1 = require("../models");
 const auth_service_1 = require("../services/auth-service");
 const common_1 = require("../common");
 const md5_1 = __importDefault(require("md5"));
 const auth_1 = require("../auth");
+const send_email_utils_1 = require("../utils/send-email.utils");
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { phoneNumber, email, password, role } = req.body;
@@ -96,5 +98,30 @@ const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.changePassword = changePassword;
-const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const { email } = req.body;
+        const resetToken = req.headers["authorization"];
+        const origin = (_a = req.header("Origin")) === null || _a === void 0 ? void 0 : _a.toString();
+        console.log("origin", origin);
+        const user = yield models_1.User.findOne({ where: { email: email } });
+        if (!user) {
+            return common_1.response.successResponse(res, "Response Ok", "List User");
+        }
+        yield (0, send_email_utils_1.sendPasswordResetEmail)(email, resetToken, origin);
+        return common_1.response.successResponse(res, "Please check your email for a new password");
+    }
+    catch (error) {
+        return common_1.response.errorResponse(res, 500, error.message, error);
+    }
+});
 exports.forgotPassword = forgotPassword;
+const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { passWord } = req.body;
+    const name = "Reset - Password Template";
+    return res.render("reset", {
+        Password: passWord,
+    });
+});
+exports.resetPassword = resetPassword;
