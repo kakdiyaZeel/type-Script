@@ -11,7 +11,7 @@ import { response } from "../common";
 import md5 from "md5";
 import { token } from "../auth";
 import { sendPasswordResetEmail } from "../utils/send-email.utils";
-
+import jwt from "jsonwebtoken";
 export const signUp = async (req: Request, res: Response) => {
   try {
     let { phoneNumber, email, password, role } = req.body;
@@ -73,6 +73,11 @@ export const signIn = async (req: Request, res: Response) => {
 
     const authToken = token(data?.id, data?.email, data?.phoneNumber);
 
+    res.cookie("TPG", (await authToken).toString(), {
+      httpOnly: true,
+      maxAge: 900000,
+    });
+
     return response.successResponse(res, "Login Successfully", {
       role: authorities,
       token: (await authToken).toString(),
@@ -114,7 +119,7 @@ export const changePassword = async (req: any, res: any) => {
   }
 };
 
-export const forgotPassword = async (req: Request, res: Response) => {
+export const forgotPassword = async (req: any, res: any) => {
   try {
     const { email } = req.body;
     const resetToken = req.headers["authorization"];
@@ -144,4 +149,13 @@ export const resetPassword = async (req: Request, res: Response) => {
   return res.render("reset", {
     Password: passWord,
   });
+};
+
+export const signOut = async (req: any, res: any) => {
+  try {
+    res.clearCookie("TPG");
+    return response.successResponse(res, "You Have Been Singed-Out");
+  } catch (error: any) {
+    return response.errorResponse(res, error.message, error);
+  }
 };

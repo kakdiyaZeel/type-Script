@@ -1,7 +1,6 @@
 import config from "./config";
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
-import { response } from "../common";
 
 const OAuth2 = google.auth.OAuth2;
 

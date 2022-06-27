@@ -16,7 +16,7 @@ exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const common_1 = require("../common");
 const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.body.token || req.query.token || req.headers["authorization"];
+    const token = req.cookies.TPG || req.query.token || req.headers["authorization"];
     if (!token) {
         (err) => {
             return common_1.response.errorResponse(res, 401, "Unauthorized User", err);

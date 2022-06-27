@@ -18,6 +18,10 @@ const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (!users.length) {
             return common_1.response.errorResponse(res, 403, "User Not-Found");
         }
+        res.cookie("USERS", { user: users }, {
+            httpOnly: true,
+            maxAge: 900000,
+        });
         return common_1.response.successResponse(res, "List Of Users", users);
     }
     catch (error) {

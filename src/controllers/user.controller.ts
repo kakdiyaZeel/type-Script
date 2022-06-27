@@ -10,6 +10,15 @@ export const getAllUsers = async (req: Request, res: Response) => {
     if (!users.length) {
       return response.errorResponse(res, 403, "User Not-Found");
     }
+    res.cookie(
+      "USERS",
+      { user: users },
+      {
+        httpOnly: true,
+        maxAge: 900000,
+      }
+    );
+
     return response.successResponse(res, "List Of Users", users);
   } catch (error: any) {
     return response.errorResponse(res, 500, error.message, error);

@@ -11,12 +11,12 @@ exports.default = {
     USER: USER,
     PASSWORD: PASSWORD,
     DB: DATABASE,
-    dialect: 'mysql',
+    dialect: "mysql",
     PORT: DB_PORT,
     pool: {
         max: 5,
         min: 0,
         acquire: 30000,
-        idle: 10000
-    }
+        idle: 10000,
+    },
 };

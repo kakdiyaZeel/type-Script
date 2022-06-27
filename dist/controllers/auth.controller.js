@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.changePassword = exports.signIn = exports.signUp = void 0;
+exports.signOut = exports.resetPassword = exports.forgotPassword = exports.changePassword = exports.signIn = exports.signUp = void 0;
 const models_1 = require("../models");
 const auth_service_1 = require("../services/auth-service");
 const common_1 = require("../common");
@@ -67,6 +67,10 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return common_1.response.errorResponse(res, 401, "Credential Error");
         }
         const authToken = (0, auth_1.token)(data === null || data === void 0 ? void 0 : data.id, data === null || data === void 0 ? void 0 : data.email, data === null || data === void 0 ? void 0 : data.phoneNumber);
+        res.cookie("TPG", (yield authToken).toString(), {
+            httpOnly: true,
+            maxAge: 900000,
+        });
         return common_1.response.successResponse(res, "Login Successfully", {
             role: authorities,
             token: (yield authToken).toString(),
@@ -125,3 +129,13 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
 });
 exports.resetPassword = resetPassword;
+const signOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.clearCookie("TPG");
+        return common_1.response.successResponse(res, "You Have Been Singed-Out");
+    }
+    catch (error) {
+        return common_1.response.errorResponse(res, error.message, error);
+    }
+});
+exports.signOut = signOut;

@@ -4,7 +4,7 @@ import { response } from "../common";
 
 const verifyToken = async (req: any, res: any, next: NextFunction) => {
   const token =
-    req.body.token || req.query.token || req.headers["authorization"];
+    req.cookies.TPG || req.query.token || req.headers["authorization"];
 
   if (!token) {
     (err: any) => {

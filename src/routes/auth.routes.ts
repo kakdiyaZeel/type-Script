@@ -8,6 +8,7 @@ import {
   changePassword,
   forgotPassword,
   resetPassword,
+  signOut,
 } from "../controllers/auth.controller";
 
 router.post("/signUp", signUp);
@@ -19,5 +20,7 @@ router.post("/changePassword", [isVerifyToken], changePassword);
 router.get("/forgotPassword", forgotPassword);
 
 router.get("/resetPassword", resetPassword);
+
+router.post("/signOut", signOut);
 
 export { router };
