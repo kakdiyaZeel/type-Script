@@ -20,8 +20,6 @@ app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
     const project = process.env.NAME;
-    return res.render("reset", {
-        email: "test@gmail.com",
-    });
+    return res.render("index");
 });
 exports.default = app;

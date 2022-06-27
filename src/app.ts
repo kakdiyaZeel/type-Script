@@ -7,6 +7,7 @@ import { app as routerIndex } from "./routes";
 import { sequelize } from "./config/conn";
 sequelize;
 import dotenv from "dotenv";
+import path from "path";
 
 dotenv.config();
 
@@ -21,9 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
   const project = process.env.NAME;
-  return res.render("reset", {
-    email: "test@gmail.com",
-  });
+  return res.render("index");
 });
 
 export default app;
