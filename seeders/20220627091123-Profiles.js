@@ -2,16 +2,18 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.bulkInsert("Profiles", [
-      {
-        firstName: "TestUser1",
-        lastName: "LastTestUser1",
-        email: "TestUser@gmail.com",
-      },
-    ]);
+    // return queryInterface.bulkInsert("Profiles", [
+    //   {
+    //     firstName: "TestUser3",
+    //     lastName: "LastTestUser3",
+    //     email: "TestUser3@gmail.com",
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   },
+    // ]);
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.dropTable("Profiles");
+    return queryInterface.bulkDelete("Profiles", null, {});
   },
 };

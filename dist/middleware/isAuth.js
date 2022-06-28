@@ -18,8 +18,8 @@ const isAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         const checkUser = yield models_1.User.findByPk(id);
         const roles = yield (checkUser === null || checkUser === void 0 ? void 0 : checkUser.getRoles());
         for (let index = 0; index < roles.length; index++) {
-            const checkAdmin = roles[index].name === "admin";
-            if (checkAdmin) {
+            const checkUser = roles[index].name === "admin";
+            if (checkUser) {
                 return next();
             }
         }

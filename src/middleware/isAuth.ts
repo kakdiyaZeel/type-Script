@@ -1,4 +1,4 @@
-import { User, Role, ROLES } from "../models";
+import { User } from "../models";
 import { NextFunction } from "express";
 import { response } from "../common";
 
@@ -9,9 +9,9 @@ const isAdmin = async (req: any, res: any, next: NextFunction) => {
     const roles = await checkUser?.getRoles();
 
     for (let index = 0; index < roles.length; index++) {
-      const checkAdmin = roles[index].name === "admin";
+      const checkUser = roles[index].name === "admin";
 
-      if (checkAdmin) {
+      if (checkUser) {
         return next();
       }
     }

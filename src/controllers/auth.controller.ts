@@ -11,7 +11,7 @@ import { response } from "../common";
 import md5 from "md5";
 import { token } from "../auth";
 import { sendPasswordResetEmail } from "../utils/send-email.utils";
-import jwt from "jsonwebtoken";
+
 export const signUp = async (req: Request, res: Response) => {
   try {
     let { phoneNumber, email, password, role } = req.body;
@@ -19,8 +19,8 @@ export const signUp = async (req: Request, res: Response) => {
     const salt = <any>md5(<any>10);
     password = md5(password, salt);
 
-    let createUsers = await createUser(phoneNumber, email, password)
-      .then((user) => {
+    let createUsers = await createUser(phoneNumber, email, password).then(
+      (user) => {
         if (role) {
           findRole(role).then((roles: any) => {
             user?.setRoles(roles).then(() => {
@@ -40,13 +40,18 @@ export const signUp = async (req: Request, res: Response) => {
             );
           });
         }
-      })
-      .catch((err) => {
-        return response.errorResponse(res, 500, err.message, err);
-      });
+      }
+    );
   } catch (error: any) {
-    console.log(error);
-    return response.errorResponse(res, 500, error.message, error);
+    console.log(error.message);
+    if (error.message === "SequelizeUniqueConstraintError: Validation error") {
+      return response.errorResponse(
+        res,
+        401,
+        "Please Enter Your Valid EmailId And PhoneNumber"
+      );
+    }
+    return response.errorResponse(res, 500, "validation error", error.message);
   }
 };
 
@@ -54,6 +59,7 @@ export const signIn = async (req: Request, res: Response) => {
   try {
     const { email, phoneNumber, password } = req.body;
     const body = phoneNumber;
+    const validator = true;
     const salt = <any>md5(<any>10);
     const encryptedPassword = md5(password, salt);
     const authorities = [];
@@ -61,6 +67,15 @@ export const signIn = async (req: Request, res: Response) => {
     const data = body
       ? await loginWithPhone(phoneNumber, encryptedPassword)
       : await loginWithEmail(email, encryptedPassword);
+
+    const filterEmail = <any>data?.email == email;
+    const filterPassword = <any>data?.password == encryptedPassword;
+
+    const validation = validator ? filterEmail : filterPassword;
+
+    if (validation == false) {
+      return response.errorResponse(res, 403, "Please Check Your Credentials");
+    }
 
     const roles = await data?.getRoles();
     for (let i = 0; i < roles.length; i++) {

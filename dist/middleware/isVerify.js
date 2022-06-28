@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const common_1 = require("../common");
+const helper_1 = require("../helper");
 const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.cookies.TPG || req.query.token || req.headers["authorization"];
     if (!token) {
@@ -27,6 +28,9 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         req.token = decodedToken;
     }
     catch (error) {
+        if (error.message === "jwt must be provided") {
+            return common_1.response.errorResponse(res, 403, (0, helper_1.errorHandler)(error.message));
+        }
         return common_1.response.errorResponse(res, 500, error.message, error);
     }
     return next();

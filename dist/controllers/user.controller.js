@@ -39,6 +39,7 @@ const findUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return common_1.response.successResponse(res, "Verified User", user);
     }
     catch (error) {
+        console.log(error);
         return common_1.response.errorResponse(res, error.message, error);
     }
 });

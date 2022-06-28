@@ -10,12 +10,12 @@ function Roles(sequelize) {
         id: {
             type: sequelize_1.DataTypes.INTEGER,
             primaryKey: true,
-            allowNull: false
+            allowNull: false,
         },
         name: {
-            type: sequelize_1.DataTypes.STRING,
-            allowNull: false
-        }
+            type: sequelize_1.DataTypes.ENUM("user", "admin", "moderator"),
+            allowNull: false,
+        },
     });
 }
 exports.Roles = Roles;

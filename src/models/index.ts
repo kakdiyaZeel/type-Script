@@ -11,7 +11,7 @@ if (syncData === "true") {
     .then(() => {
       return console.log("Yes resync Data");
     })
-    .catch((err:any) => {
+    .catch((err: any) => {
       return console.log(err);
     });
 }

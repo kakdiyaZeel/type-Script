@@ -24,8 +24,7 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let { phoneNumber, email, password, role } = req.body;
         const salt = (0, md5_1.default)(10);
         password = (0, md5_1.default)(password, salt);
-        let createUsers = yield (0, auth_service_1.createUser)(phoneNumber, email, password)
-            .then((user) => {
+        let createUsers = yield (0, auth_service_1.createUser)(phoneNumber, email, password).then((user) => {
             if (role) {
                 (0, auth_service_1.findRole)(role).then((roles) => {
                     user === null || user === void 0 ? void 0 : user.setRoles(roles).then(() => {
@@ -38,14 +37,14 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     return common_1.response.successResponse(res, "User Sign In Successfully", createUsers);
                 });
             }
-        })
-            .catch((err) => {
-            return common_1.response.errorResponse(res, 500, err.message, err);
         });
     }
     catch (error) {
-        console.log(error);
-        return common_1.response.errorResponse(res, 500, error.message, error);
+        console.log(error.message);
+        if (error.message === "SequelizeUniqueConstraintError: Validation error") {
+            return common_1.response.errorResponse(res, 401, "Please Enter Your Valid EmailId And PhoneNumber");
+        }
+        return common_1.response.errorResponse(res, 500, "validation error", error.message);
     }
 });
 exports.signUp = signUp;
@@ -53,12 +52,19 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, phoneNumber, password } = req.body;
         const body = phoneNumber;
+        const validator = true;
         const salt = (0, md5_1.default)(10);
         const encryptedPassword = (0, md5_1.default)(password, salt);
         const authorities = [];
         const data = body
             ? yield (0, auth_service_1.loginWithPhone)(phoneNumber, encryptedPassword)
             : yield (0, auth_service_1.loginWithEmail)(email, encryptedPassword);
+        const filterEmail = (data === null || data === void 0 ? void 0 : data.email) == email;
+        const filterPassword = (data === null || data === void 0 ? void 0 : data.password) == encryptedPassword;
+        const validation = validator ? filterEmail : filterPassword;
+        if (validation == false) {
+            return common_1.response.errorResponse(res, 403, "Please Check Your Credentials");
+        }
         const roles = yield (data === null || data === void 0 ? void 0 : data.getRoles());
         for (let i = 0; i < roles.length; i++) {
             authorities.push("ROLE_" + roles[i].name.toUpperCase());

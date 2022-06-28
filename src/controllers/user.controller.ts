@@ -37,6 +37,7 @@ export const findUserById = async (req: any, res: any) => {
 
     return response.successResponse(res, "Verified User", user);
   } catch (error: any) {
+    console.log(error);
     return response.errorResponse(res, error.message, error);
   }
 };
