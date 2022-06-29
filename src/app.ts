@@ -19,9 +19,9 @@ app.use(routerIndex);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get("/", (req, res) => {
+app.get("/", (req: any, res: any) => {
   const project = process.env.NAME;
-  return res.send(project);
+  return res.status(200).json({ data: project });
 });
 
 export default app;

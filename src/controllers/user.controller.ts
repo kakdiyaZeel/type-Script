@@ -1,4 +1,3 @@
-import { User, Role } from "../models";
 import { Request, Response } from "express";
 import { response } from "../common";
 import { findUser, getUsers } from "../services/user-services";

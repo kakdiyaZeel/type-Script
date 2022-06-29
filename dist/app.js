@@ -22,6 +22,6 @@ app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
     const project = process.env.NAME;
-    return res.send(project);
+    return res.status(200).json({ data: project });
 });
 exports.default = app;
